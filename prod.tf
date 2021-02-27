@@ -30,6 +30,14 @@ resource "aws_default_subnet" "default_az2" {
   }
 }
 
+resource "aws_default_subnet" "default_az3" {
+  availability_zone = "eu-north-1c"
+
+  tags = {
+    "Terraform" : "true"
+  }
+}
+
 resource "aws_security_group" "prod_web" {
   name        = "prod_web"
   description = "Allow standard HTTP(S) inbound and everything outbound"
@@ -61,8 +69,6 @@ resource "aws_security_group" "prod_web" {
 }
 
 resource "aws_instance" "prod_web" {
-  count = 2
-
   ami           = "ami-0f4438bc02d18717f"
   instance_type = "t3.micro"
 
@@ -75,21 +81,10 @@ resource "aws_instance" "prod_web" {
   }
 }
 
-resource "aws_eip_association" "prod_web" {
-  instance_id   = aws_instance.prod_web.0.id
-  allocation_id = aws_eip.prod_web.id
-}
-
-resource "aws_eip" "prod_web" {
-  tags = {
-    "Terraform" : "true"
-  }
-}
-
 resource "aws_elb" "prod_web" {
   name            = "prod-web"
   instances       = aws_instance.prod_web.*.id
-  subnets         = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+  subnets         = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id, aws_default_subnet.default_az3.id]
   security_groups = [aws_security_group.prod_web.id]
 
   listener {
