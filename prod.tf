@@ -6,9 +6,29 @@ provider "aws" {
 resource "aws_s3_bucket" "prod_tf_bucket" {
   bucket = "croviking-terraform-learning"
   acl    = "private"
+
+  tags = {
+    "Terraform" : "true"
+  }
 }
 
 resource "aws_default_vpc" "default" {}
+
+resource "aws_default_subnet" "default_az1" {
+  availability_zone = "eu-north-1a"
+
+  tags = {
+    "Terraform" : "true"
+  }
+}
+
+resource "aws_default_subnet" "default_az2" {
+  availability_zone = "eu-north-1b"
+
+  tags = {
+    "Terraform" : "true"
+  }
+}
 
 resource "aws_security_group" "prod_web" {
   name        = "prod_web"
