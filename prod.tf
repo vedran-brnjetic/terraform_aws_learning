@@ -13,7 +13,7 @@ resource "aws_default_vpc" "default" {}
 resource "aws_security_group" "prod_web" {
   name        = "prod_web"
   description = "Allow standard HTTP(S) inbound and everything outbound"
-  
+
   ingress {
     from_port   = 80
     to_port     = 80
@@ -22,7 +22,7 @@ resource "aws_security_group" "prod_web" {
   }
 
   ingress {
-    from_port   = 443 
+    from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
@@ -41,13 +41,26 @@ resource "aws_security_group" "prod_web" {
 }
 
 resource "aws_instance" "prod_web" {
+  count = 2
+
   ami           = "ami-0f4438bc02d18717f"
   instance_type = "t3.micro"
-  
+
   vpc_security_group_ids = [
     aws_security_group.prod_web.id
   ]
 
+  tags = {
+    "Terraform" : "true"
+  }
+}
+
+resource "aws_eip_association" "prod_web" {
+  instance_id   = aws_instance.prod_web.0.id
+  allocation_id = aws_eip.prod_web.id
+}
+
+resource "aws_eip" "prod_web" {
   tags = {
     "Terraform" : "true"
   }
