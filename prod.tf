@@ -40,7 +40,7 @@ resource "aws_default_subnet" "default_az3" {
 
 resource "aws_security_group" "prod_web" {
   name        = "prod_web"
-  description = "Allow standard HTTP(S) inbound and everything outbound"
+  description = "Allow standard HTTP(S) inbound and everything outbound, 1337 for Strapi"
 
   ingress {
     from_port   = 80
@@ -52,6 +52,13 @@ resource "aws_security_group" "prod_web" {
   ingress {
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 1337
+    to_port     = 1337
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
