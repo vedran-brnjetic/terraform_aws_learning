@@ -57,6 +57,13 @@ resource "aws_security_group" "prod_web" {
   }
 
   ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 1337
     to_port     = 1337
     protocol    = "tcp"
@@ -78,6 +85,7 @@ resource "aws_security_group" "prod_web" {
 resource "aws_instance" "prod_web" {
   ami           = "ami-09588afd2788f992e"
   instance_type = "t3.small"
+  key_name      = "CroVikingStrapi"
 
   vpc_security_group_ids = [
     aws_security_group.prod_web.id
