@@ -69,8 +69,8 @@ resource "aws_security_group" "prod_web" {
 }
 
 resource "aws_instance" "prod_web" {
-  ami           = "ami-0f4438bc02d18717f"
-  instance_type = "t3.micro"
+  ami           = "ami-09588afd2788f992e"
+  instance_type = "t3.small"
 
   vpc_security_group_ids = [
     aws_security_group.prod_web.id
